@@ -1,0 +1,25 @@
+# Whitelist some files
+!.gitignore
+!README.md
+
+# Ignore all files named .DS_Store or ending with .log
+**/.DS_Store
+**.log
+
+# Project structure
+
+## Environment Files - only keep samples
+env_files/*
+!env_files/*.env.sample
+
+## Secrets - only keep samples
+secrets/*
+!secrets/*.txt.sample
+
+## Volumes
+volumes/*
+!volumes/traefik/letsencrypt/.gitkeep
+
+# DEV
+stack.yml
+.env

@@ -1,0 +1,34 @@
+http:
+  middlewares:
+    defaultchain:
+      chain:
+        middlewares:
+          #- latency-check
+          - compress
+          - ratelimit
+          - retry
+    latency-check:
+      circuitBreaker:
+        expression: "LatencyAtQuantileMS(50.0) > 100"
+    compress:
+      compress: {}
+    adminDigest:
+      digestauth:
+        usersFile: "/run/secrets/traefik_admin_digest"
+        realm: "Admin"
+    globalAuth:
+      forwardAuth:
+        address: "https://example.com/auth"
+    ratelimit:
+      ratelimit:
+        average: 100
+        period: 1m
+        burst: 50
+    redirectToHttps:
+      redirectScheme:
+        scheme: https
+        permanent: false
+        port: "443"
+    retry:
+      retry:
+        attempts: 4

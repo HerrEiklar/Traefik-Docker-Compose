@@ -1,0 +1,67 @@
+version: "3.3"
+
+services:
+  traefik:
+    image: traefik:v2.3.1
+    network_mode: bridge # would not word in stack
+    ports:
+      - 30:30
+      - 80:80
+      - 443:443
+      # - 143:143
+      # - 993:993
+      # - 110:110
+      # - 995:995
+      # - 4190:4190
+      # - 25:25
+      # - 465:465
+      # - 587:587
+      # - 8080:8080 # Traefik Dashboard - leave disabled!
+    env_file:
+      - ${env_files}/traefik.env
+    secrets:
+      - traefik_admin_digest
+      - hetzner_api_key
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ${configs}/traefik.yml:/traefik.yml:ro
+      - ${configs}/traefik:/conf:ro
+      - ${volumes}/traefik:/data:rw
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.http_traefik.rule: "Host(`${traefik_host}`)"
+      traefik.http.routers.http_traefik.entrypoints: "web"
+      traefik.http.routers.http_traefik.middlewares: "defaultchain@file,redirectToHttps@file"
+
+      traefik.http.routers.https_traefik.rule: "Host(`${traefik_host}`)"
+      traefik.http.routers.https_traefik.entrypoints: "websecure"
+      traefik.http.routers.https_traefik.middlewares: "defaultchain@file,adminDigest@file"
+      traefik.http.routers.https_traefik.service: "traefik"
+      traefik.http.routers.https_traefik.tls: "true"
+      traefik.http.routers.https_traefik.tls.certresolver: "hetzner01"
+      traefik.http.routers.https_traefik.tls.domains[0].main: "${traefik_host}"
+
+      traefik.http.services.traefik.loadbalancer.server.port: "${traefik_port}"
+      traefik.http.services.traefik.loadbalancer.server.scheme: "${traefik_scheme}"
+      traefik.http.services.traefik.loadbalancer.healthcheck.interval: "10s"
+      traefik.http.services.traefik.loadbalancer.healthcheck.port: "${traefik_port}"
+      traefik.http.services.traefik.loadbalancer.healthcheck.scheme: "${traefik_scheme}"
+      traefik.http.services.traefik.loadbalancer.sticky.cookie: "true"
+
+  redirect:
+    image: schmunk42/nginx-redirect
+    network_mode: bridge
+    env_file:
+      - ${env_files}/redirect.env
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.http_redirect.rule: "HostRegexp(`{catchall:.*}`)"
+      traefik.http.routers.http_redirect.entrypoints: "web"
+      traefik.http.routers.http_redirect.middlewares: "defaultchain@file"
+      traefik.http.routers.http_redirect.priority: 1
+
+secrets:
+  traefik_admin_digest:
+    file: ${secrets}/traefik_admin_digest.txt
+  hetzner_api_key:
+    file: ${secrets}/hetzner_api_key.txt
