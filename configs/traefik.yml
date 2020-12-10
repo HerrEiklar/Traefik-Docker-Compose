@@ -5,6 +5,10 @@ global:
   checkNewVersion: true
   sendAnonymousUsage: false
 
+## Static configuration
+serversTransport:
+  insecureSkipVerify: true
+
 ################################################################
 # Entrypoints configuration
 ################################################################
