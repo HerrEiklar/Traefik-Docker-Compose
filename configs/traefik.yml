@@ -26,33 +26,6 @@ entryPoints:
   websecure:
     address: ':443'
 
-  ssh-gitea:
-    address: ':30'
-
-  # mail-imap-secure:
-  #   address: ':993'
-
-  # mail-imap:
-  #   address: ':143'
-
-  # mail-pop3-secure:
-  #   address: ':995'
-
-  # mail-pop3:
-  #   address: ':110'
-
-  # mail-smtp:
-  #   address: ':25'
-
-  # mail-smtp-secure:
-  #   address: ':465'
-
-  # mail-smtp-secure-2:
-  #   address: ':587'
-
-  # mail-sieve:
-  #   address: ':4190'
-
 ################################################################
 # Traefik logs configuration
 ################################################################
