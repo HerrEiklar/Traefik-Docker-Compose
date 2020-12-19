@@ -21,8 +21,8 @@ http:
         address: "https://example.com/auth"
     ratelimit:
       ratelimit:
-        average: 100
-        period: 1m
+        average: 10
+        period: 1s
         burst: 50
     redirectToHttps:
       redirectScheme:
