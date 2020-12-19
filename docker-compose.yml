@@ -5,17 +5,8 @@ services:
     image: traefik:v2.3.1
     network_mode: bridge # would not word in stack
     ports:
-      - 30:30
       - 80:80
       - 443:443
-      # - 143:143
-      # - 993:993
-      # - 110:110
-      # - 995:995
-      # - 4190:4190
-      # - 25:25
-      # - 465:465
-      # - 587:587
       # - 8080:8080 # Traefik Dashboard - leave disabled!
     env_file:
       - ${env_files}/traefik.env
